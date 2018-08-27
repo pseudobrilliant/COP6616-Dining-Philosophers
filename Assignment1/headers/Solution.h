@@ -10,6 +10,9 @@
 #include <string>
 #include <chrono>
 #include <vector>
+#include <vector>
+
+#include "Prime.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -30,9 +33,10 @@ protected:
     vector<long> primeNumbers;
     long primeSum = 0;
     int maxNumber = 0;
+    const int startNum = 2;
 
 private:
-
+    // 0 and 1 are not prime or composite so let's not include them.
     string solutionName;
     high_resolution_clock::time_point startTime;
     high_resolution_clock::time_point endTime;

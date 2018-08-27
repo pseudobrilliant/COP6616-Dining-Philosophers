@@ -1,13 +1,12 @@
 
 #include "../headers/SequentialSolution.h"
-#include "../headers/Prime.h"
 #include <iostream>
 
 using namespace std;
 
 void SequentialSolution::RunSolution()
 {
-    for (int i =1; i <= maxNumber; i++)
+    for (int i = startNum; i <= maxNumber; i++)
     {
         if (IsPrime(i))
         {

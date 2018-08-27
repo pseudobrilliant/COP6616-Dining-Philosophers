@@ -22,10 +22,7 @@
 //Chance of error is 4 ^ -k = 1 / 256
 #define ACCURACY 9
 
-bool IsPrime(int num);
-bool MillerRabinTest(int num, int s, int k);
-
-bool IsPrime(int num)
+inline bool IsPrime(int num)
 {
 
     MP_INT n;

@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cmath>
 #include "../headers/SequentialSolution.h"
+#include "../headers/TicketSolution.h"
 
 int main()
 {
@@ -17,6 +18,10 @@ int main()
     SequentialSolution seq("Sequential", numMax);
     seq.Run();
     seq.Report();
+
+    TicketSolution ticket(numThreads, "Ticket", numMax);
+    ticket.Run();
+    ticket.Report();
 
     return 0;
 }

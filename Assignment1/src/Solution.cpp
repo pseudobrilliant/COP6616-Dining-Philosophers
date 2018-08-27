@@ -7,17 +7,17 @@
 
 Solution::Solution(string name, const int maxNum)
 {
-solutionName = name;
-maxNumber = maxNum;
+    solutionName = name;
+    maxNumber = maxNum;
 };
 
-void  Solution::Run()
+void Solution::Run()
 {
     primeSum = 0;
     primeNumbers.clear();
 
     cout << "Solution: " << solutionName << "\n";
-    cout << "Running..."<<flush;
+    cout << "Running..." << flush;
     startTime = high_resolution_clock::now();
     RunSolution();
     endTime = high_resolution_clock::now();
@@ -26,7 +26,7 @@ void  Solution::Run()
 
 void Solution::Report()
 {
-    long microDuration = duration_cast<microseconds>( endTime - startTime ).count();
+    long microDuration = duration_cast<microseconds>(endTime - startTime).count();
     float secondsDuration = float(microDuration) / float(1000000.0f);
     long size = primeNumbers.size();
 
@@ -35,11 +35,10 @@ void Solution::Report()
     cout << "Prime Total: " << primeSum << "\n";
     cout << "Top 10 Prime Numbers: ";
 
-    for (int i = 1; i <= 10 && i < size; i ++)
+    for (int i = 1; i <= 10 && i < size; i++)
     {
         long num = primeNumbers[size - i];
         cout << num << " ";
     }
-    cout << "\n";
-
+    cout << "\n\n------------------------------------------------------------------------\n\n";
 };
