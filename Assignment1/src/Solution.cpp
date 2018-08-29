@@ -35,7 +35,7 @@ void Solution::Report()
     cout << "Prime Total: " << primeSum << "\n";
     cout << "Top 10 Prime Numbers: ";
 
-    for (int i = 1; i <= 10 && i < size; i++)
+    for (int i = 1; i <= 30 && i < size; i++)
     {
         long num = primeNumbers[size - i];
         cout << num << " ";

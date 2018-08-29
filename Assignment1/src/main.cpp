@@ -12,7 +12,7 @@
 int main()
 {
     const int numThreads = 8;
-    const int numMaxOrder = 8;
+    const int numMaxOrder = 5;
     const int numMax = int(pow(10,numMaxOrder));
 
     SequentialSolution seq("Sequential", numMax);

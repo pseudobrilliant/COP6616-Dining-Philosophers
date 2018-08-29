@@ -30,10 +30,10 @@ public:
 
 protected:
     virtual void RunSolution() = 0;
-    vector<long> primeNumbers;
+    vector<int> primeNumbers;
     long primeSum = 0;
     int maxNumber = 0;
-    const int startNum = 2;
+    const int startNum = 3;
 
 private:
     // 0 and 1 are not prime or composite so let's not include them.

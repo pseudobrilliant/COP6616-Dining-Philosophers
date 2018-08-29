@@ -4,11 +4,13 @@
 * Description: 
 *******************************************************************/
 
+#include <sstream>
 #include "../headers/TicketSolution.h"
 
 void TicketSolution::RunSolution()
 {
     volatile atomic<int> *ticketTracker = new atomic<int>[numThreads];
+    volatile atomic<int> *ticket = new atomic<int>();
     volatile atomic<bool> *flagTracker = new atomic<bool>[numThreads];
 
     for (int i =0; i < numThreads; i ++)
@@ -17,11 +19,15 @@ void TicketSolution::RunSolution()
         flagTracker[i] = false;
     }
 
+    *ticket = startNum;
+
+    primeSum = 0;
+
     vector<thread> threads;
     vector<TicketThread*> ticketJobs;
     for (int i =0; i < numThreads; i++)
     {
-        TicketThread *t = new TicketThread (numThreads, i, maxNumber, &primeSum, &primeNumbers, ticketTracker, flagTracker);
+        TicketThread *t = new TicketThread (numThreads, i, maxNumber, &primeSum, &primeNumbers, ticketTracker, flagTracker, ticket);
         threads.push_back(thread(&TicketThread::RunThread, t));
         ticketJobs.push_back(t);
     }
@@ -43,12 +49,8 @@ void TicketThread:: RunThread()
 
     while(ticket <= maxNumber)
     {
-        bool isPrime = IsPrime(ticket);
-
-        if(isPrime)
+        if(IsPrime(ticket) && CheckLine(ticket))
         {
-            CheckLine(ticket);
-
             ProcessPrime(ticket);
 
             LeaveLine();
@@ -72,10 +74,10 @@ int TicketThread::GetTicket()
 
     ticketTracker[threadID] = ticket;
 
-    return ticket;
+    return ticketTracker[threadID];
 }
 
-void TicketThread::CheckLine(int ticket)
+bool TicketThread::CheckLine(int ticket)
 {
 
     flagTracker[threadID] = true;
@@ -84,21 +86,38 @@ void TicketThread::CheckLine(int ticket)
     {
         if ( other != threadID)
         {
-            int otherTicket = ticketTracker[other];
+
+            if( ticketTracker[other] == ticket && other < threadID)
+            {
+                return false;
+            }
+
             //lexicographical ordering
-            while(flagTracker[other] && (otherTicket < ticket || ( otherTicket == ticket && other < threadID)))
+            while(flagTracker[other] && (ticketTracker[other] < ticket))
             {
                 //Just waiting, nothing else to do here
             }
         }
     }
+
+    return true;
 }
 
 void TicketThread::ProcessPrime(int ticket)
 {
-    primeSum += long(ticket);
+    *primeSum += long(ticket);
     primeNumbers->push_back(ticket);
-    //cout <<"Thread #"<< threadID <<" found prime # "<< ticket<<"\n"<<flush;
+    /*stringstream str;
+    str<<"Thread #"<< threadID <<" found prime # "<< ticket<<"\n"<<flush;
+    str<< "Ticket Tracker State: ";
+    for(int i =0; i < numThreads; i++)
+    {
+        cout<< ticketTracker[i] << " ";
+    }
+    str<<"\n";
+
+    cout<<str.str()<<flush;*/
+
 }
 
 void TicketThread::LeaveLine()

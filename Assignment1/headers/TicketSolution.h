@@ -33,7 +33,8 @@ private:
 class TicketThread
 {
 public:
-    TicketThread(int totalThreads, int thread, int target, long *sum, vector<long>* numbers, volatile atomic<int> *tickets, volatile atomic<bool> *flags)
+    TicketThread(int totalThreads, int thread, int target, long *sum, vector<int>* numbers,
+            volatile atomic<int> *tickets, volatile atomic<bool> *flags, volatile atomic<int> *ticket)
     {
 
         numThreads = totalThreads;
@@ -43,6 +44,7 @@ public:
         primeNumbers = numbers;
         ticketTracker = tickets;
         flagTracker = flags;
+        ticketCounter = ticket;
 
     };
 
@@ -52,16 +54,16 @@ private:
     int threadID = 0;
     int numThreads = 1;
     int maxNumber = 0;
+    volatile atomic<int> *ticketCounter;
     long *primeSum;
-    vector<long> *primeNumbers;
+    vector<int> *primeNumbers;
     volatile atomic<int> *ticketTracker;
     volatile atomic<bool> *flagTracker;
 
     int GetTicket();
-    void CheckLine(int ticket);
+    bool CheckLine(int ticket);
     void ProcessPrime(int ticket);
     void LeaveLine();
-
 
 };
 
