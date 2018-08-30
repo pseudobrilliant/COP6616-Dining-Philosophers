@@ -28,6 +28,13 @@ public:
 
     ~Solution(){};
 
+    void Compare(vector<int> otherNumbers);
+
+    vector<int> GetPrimeNumbers()
+    {
+        return primeNumbers;
+    }
+
 protected:
     virtual void RunSolution() = 0;
     vector<int> primeNumbers;

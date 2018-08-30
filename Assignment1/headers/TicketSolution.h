@@ -18,6 +18,8 @@ public:
     TicketSolution(int t, string name, const int maxNum): Solution(name,maxNum)
     {
         numThreads = t;
+        ticketTracker = new atomic<int>[numThreads];
+        flagTracker = new atomic<bool>[numThreads];
     }
 
     void RunSolution() override;
@@ -28,13 +30,15 @@ public:
 
 private:
     int numThreads = 0;
+    volatile atomic<int> *ticketTracker;
+    volatile atomic<bool> *flagTracker;
 };
 
 class TicketThread
 {
 public:
     TicketThread(int totalThreads, int thread, int target, long *sum, vector<int>* numbers,
-            volatile atomic<int> *tickets, volatile atomic<bool> *flags, volatile atomic<int> *ticket)
+            volatile atomic<int> *tickets, volatile atomic<bool> *flags)
     {
 
         numThreads = totalThreads;
@@ -44,7 +48,6 @@ public:
         primeNumbers = numbers;
         ticketTracker = tickets;
         flagTracker = flags;
-        ticketCounter = ticket;
 
     };
 
@@ -54,7 +57,6 @@ private:
     int threadID = 0;
     int numThreads = 1;
     int maxNumber = 0;
-    volatile atomic<int> *ticketCounter;
     long *primeSum;
     vector<int> *primeNumbers;
     volatile atomic<int> *ticketTracker;

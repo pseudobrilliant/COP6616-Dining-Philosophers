@@ -42,3 +42,42 @@ void Solution::Report()
     }
     cout << "\n\n------------------------------------------------------------------------\n\n";
 };
+
+
+
+void Solution::Compare(vector<int> otherNumbers)
+{
+    cout <<"Left Join: ";
+    for (int i =0; i < otherNumbers.size(); i ++)
+    {
+        int j;
+        for( j = 0; j < primeNumbers.size(); j++)
+        {
+            if(primeNumbers[j] == otherNumbers[i])
+                break;
+        }
+
+        if(j ==  primeNumbers.size())
+        {
+            cout << otherNumbers[i] << " ";
+        }
+    }
+    cout<<"\n";
+
+    cout <<"Right Join: ";
+    for (int i =0; i < primeNumbers.size(); i ++)
+    {
+        int j;
+        for(j = 0; j < otherNumbers.size(); j++)
+        {
+            if(primeNumbers[i] == otherNumbers[j])
+                break;
+        }
+
+        if(j ==  otherNumbers.size())
+        {
+            cout << otherNumbers[i] << " ";
+        }
+    }
+    cout<<"\n";
+}
