@@ -5,10 +5,10 @@
 *******************************************************************/
 #include "../headers/Solution.h"
 
-Solution::Solution(string name, const int maxNum)
+Solution::Solution(string name, const int max)
 {
     solutionName = name;
-    maxNumber = maxNum;
+    maxNum = max;
 };
 
 void Solution::Run()

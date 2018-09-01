@@ -6,7 +6,7 @@ using namespace std;
 
 void SequentialSolution::RunSolution()
 {
-    for (int i = startNum; i <= maxNumber; i+=2)
+    for (int i = startNum; i <= maxNum; i+=2)
     {
         if (IsPrime(i))
         {

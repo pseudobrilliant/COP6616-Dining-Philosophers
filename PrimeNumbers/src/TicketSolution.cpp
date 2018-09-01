@@ -22,7 +22,7 @@ void TicketSolution::RunSolution()
     vector<TicketThread*> ticketJobs;
     for (int i =0; i < numThreads; i++)
     {
-        TicketThread *t = new TicketThread (numThreads, i, maxNumber, &primeSum, &primeNumbers, ticketTracker, flagTracker);
+        TicketThread *t = new TicketThread (numThreads, i, maxNum, &primeSum, &primeNumbers, ticketTracker, flagTracker);
         threads.push_back(thread(&TicketThread::RunThread, t));
         ticketJobs.push_back(t);
     }

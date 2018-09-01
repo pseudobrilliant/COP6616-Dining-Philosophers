@@ -1770,7 +1770,7 @@ mpz_get_ui (mpz_srcptr __gmp_z) __GMP_NOTHROW
   mp_size_t __gmp_n = __gmp_z->_mp_size;
   mp_limb_t __gmp_l = __gmp_p[0];
   /* This is a "#if" rather than a plain "if" so as to avoid gcc warnings
-     about "<< GMP_NUMB_BITS" exceeding the type size, and to avoid Borland
+     about "<< GMP_NUMB_BITS" exceeding the type maxSize, and to avoid Borland
      C++ 6.0 warnings about condition always true for something like
      "ULONG_MAX < GMP_NUMB_MASK".  */
 #if GMP_NAIL_BITS == 0 || defined (_LONG_LONG_LIMB)
@@ -2063,8 +2063,8 @@ mpq_neg (mpq_ptr __gmp_w, mpq_srcptr __gmp_u)
   __GMPN_AORS_1(cout, dst, src, n, v, -, __GMPN_SUBCB)
 
 
-/* Compare {xp,size} and {yp,size}, setting "result" to positive, zero or
-   negative.  size==0 is allowed.  On random data usually only one limb will
+/* Compare {xp,maxSize} and {yp,maxSize}, setting "result" to positive, zero or
+   negative.  maxSize==0 is allowed.  On random data usually only one limb will
    need to be examined to get a result, so it's worth having it inline.  */
 #define __GMPN_CMP(result, xp, yp, size)                                \
   do {                                                                  \
@@ -2090,15 +2090,15 @@ mpq_neg (mpq_ptr __gmp_w, mpq_srcptr __gmp_u)
 
 
 #if defined (__GMPN_COPY) && ! defined (__GMPN_COPY_REST)
-#define __GMPN_COPY_REST(dst, src, size, start)                 \
+#define __GMPN_COPY_REST(dst, src, maxSize, start)                 \
   do {                                                          \
     /* ASSERT ((start) >= 0); */                                \
-    /* ASSERT ((start) <= (size)); */                           \
-    __GMPN_COPY ((dst)+(start), (src)+(start), (size)-(start)); \
+    /* ASSERT ((start) <= (maxSize)); */                           \
+    __GMPN_COPY ((dst)+(start), (src)+(start), (maxSize)-(start)); \
   } while (0)
 #endif
 
-/* Copy {src,size} to {dst,size}, starting at "start".  This is designed to
+/* Copy {src,maxSize} to {dst,maxSize}, starting at "start".  This is designed to
    keep the indexing dst[j] and src[j] nice and simple for __GMPN_ADD_1,
    __GMPN_ADD, etc.  */
 #if ! defined (__GMPN_COPY_REST)

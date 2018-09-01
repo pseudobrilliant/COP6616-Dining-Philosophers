@@ -8,42 +8,35 @@ void SiloSolution::RunSolution()
 {
     primeSum = 0;
     primeNumbers.clear();
+    int maxSize = ((maxNum / 2) /numThreads) + ((maxNum / 2) % numThreads) + (maxNum % 2);
 
     vector<thread> threads;
     vector<SiloThread*> siloJobs;
+
     for (int i =0; i < numThreads; i++)
     {
-        SiloThread *t = new SiloThread (numThreads, i, startNum, maxNumber);
+        SiloThread *t = new SiloThread (numThreads, i, startNum, maxNum, maxSize);
         threads.push_back(thread(&SiloThread::RunThread, t));
         siloJobs.push_back(t);
     }
 
-    for (auto& t: threads)
+    vector<int*> siloPrimes;
+    for (int i =0; i< numThreads; i++)
     {
-        t.join();
-    }
-
-    vector<vector<int>*> siloPrimes;
-    int siloTotals= 0;
-    for (int i =0; i< numThreads; i ++)
-    {
+        threads[i].join();
         primeSum += siloJobs[i]->GetSum();
-        vector<int> * vec = siloJobs[i]->GetPrimes();
-        siloTotals += vec->size();
+        int* vec = siloJobs[i]->GetPrimes();
         siloPrimes.push_back(vec);
     }
 
-    for (int i= 0; i < siloTotals; i++)
+    for (int i= 0; i < maxSize * numThreads; i++)
     {
         int silo = i % numThreads;
         int place = i / numThreads;
-        if(place < siloPrimes[silo]->size())
+        int cur = siloPrimes[silo][place];
+        if (cur != 0)
         {
-            int cur = siloPrimes[silo]->at(place);
-            if (cur != 0)
-            {
-                primeNumbers.push_back(cur);
-            }
+             primeNumbers.push_back(cur);
         }
     }
 
@@ -58,6 +51,7 @@ void SiloThread::RunThread()
     privateCounter = threadID * 2 + startNum;
     privateDelta = numThreads * 2;
     privateSum = 0;
+    privateIndex = 0;
 
     while(privateCounter <= maxNumber)
     {
@@ -65,14 +59,15 @@ void SiloThread::RunThread()
 
         if(isPrime)
         {
-            privatePrimes.push_back(privateCounter);
+            privatePrimes[privateIndex] = privateCounter;
             privateSum += long(privateCounter);
         }
         else
         {
-            privatePrimes.push_back(0);
+            privatePrimes[privateIndex] = 0;
         }
 
+        privateIndex += 1;
         privateCounter += privateDelta;
     }
 }
@@ -82,7 +77,7 @@ long SiloThread::GetSum()
     return privateSum;
 }
 
-vector<int>* SiloThread::GetPrimes()
+int* SiloThread::GetPrimes()
 {
-    return &privatePrimes;
+    return privatePrimes;
 }

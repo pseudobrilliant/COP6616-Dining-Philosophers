@@ -39,7 +39,7 @@ protected:
     virtual void RunSolution() = 0;
     vector<int> primeNumbers;
     long primeSum = 0;
-    int maxNumber = 0;
+    int maxNum = 0;
     const int startNum = 3;
 
 private:

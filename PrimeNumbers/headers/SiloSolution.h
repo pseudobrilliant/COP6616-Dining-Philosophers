@@ -34,19 +34,26 @@ private:
 class SiloThread
 {
 public:
-    SiloThread(int totalThreads, int thread, int start, int target)
+    SiloThread(int totalThreads, int thread, int start, int target, int maxSize)
     {
         numThreads = totalThreads;
         threadID = thread;
         startNum = start;
         maxNumber = target;
+
+        privatePrimes = new int[maxSize];
+
+        for(int i =0; i <maxSize; i ++)
+        {
+            privatePrimes[i] = 0;
+        }
     };
 
     void RunThread();
 
     long GetSum();
 
-    vector<int>* GetPrimes();
+    int* GetPrimes();
 
 private:
     int threadID = 0;
@@ -55,7 +62,8 @@ private:
     int maxNumber = 0;
     int privateCounter = 0;
     int privateDelta = 0;
-    vector<int> privatePrimes;
+    int privateIndex = 0;
+    int* privatePrimes;
     long privateSum = 0;
 };
 

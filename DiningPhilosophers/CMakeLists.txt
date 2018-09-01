@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.12)
+project(DiningPhilosophers)
+
+set(CMAKE_CXX_STANDARD 14)
+
+add_executable(DiningPhilosophers_Version1 src/Solution1.cpp headers/Philosopher.h)
