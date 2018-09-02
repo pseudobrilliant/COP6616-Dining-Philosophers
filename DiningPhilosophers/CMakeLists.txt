@@ -4,3 +4,5 @@ project(DiningPhilosophers)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(DiningPhilosophers_Version1 src/Solution1.cpp headers/Philosopher.h)
+
+add_executable(DiningPhilosophers_Version2 src/Solution2.cpp headers/Philosopher.h)

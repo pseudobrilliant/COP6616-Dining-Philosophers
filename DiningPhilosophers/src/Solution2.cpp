@@ -5,7 +5,7 @@
 *******************************************************************/
 //
 
-#include "../headers/Solution1.h"
+#include "../headers/Solution2.h"
 
 Philosopher **philosophers;
 volatile atomic<int> *chopsticks;
@@ -19,7 +19,7 @@ int main()
 {
     Initialize();
 
-    cout << "Welcome to the Dining Philosophers restaurant, please press 'n' to leave.\n";
+    cout << "Welcome to the Dining Philosophers restaurant, please press 'n' to stop.\n";
 
     Run(initialState);
 
@@ -29,6 +29,10 @@ int main()
     Stop();
 
     Cleanup();
+
+    cout << "Welcome to the Dining Philosophers restaurant, please press 'q' to leave.\n";
+
+    do { cin >> in; } while(in != "q");
 }
 
 void Initialize()
@@ -42,7 +46,7 @@ void Initialize()
     philosophers = new Philosopher*[numPhilosophers];
     for(int i = 0; i < numPhilosophers; i ++)
     {
-        philosophers[i] = new Philosopher1(i, chopsticks, numChopSticks);
+        philosophers[i] = new Philosopher2(i, chopsticks, numChopSticks);
     }
 }
 
@@ -82,15 +86,15 @@ void Cleanup()
     delete philosophers;
 }
 
-void Philosopher1::Hungry()
+void Philosopher2::Hungry()
 {
     currentState = State::Hungry;
     printf("Philosopher %d is now hungry.\n", philosopherID);
 
     leftChopstick = -1;
     rightChopstick = -1;
-    int target1 = this->philosopherID;
-    int target2 = (target1 + 1) % this->numChopsticks;
+    int target1 = min(this->philosopherID, (this->philosopherID + 1) % this->numChopsticks);
+    int target2 = max(this->philosopherID, (this->philosopherID + 1) % this->numChopsticks);;
     while(!stop && (leftChopstick < 0 || rightChopstick < 0))
     {
         if(leftChopstick < 0)
@@ -106,14 +110,17 @@ void Philosopher1::Hungry()
         }
     }
 
-    SwitchState(State::Eating);
+    if(!stop)
+    {
+        SwitchState(State::Eating);
+    }
 }
 
-void Philosopher1::WaitForFork(int target)
+void Philosopher2::WaitForFork(int target)
 {
 
     bool available = false;
-    while (!stop && !available)
+    while(!stop && !available)
     {
         int desired = -1;
         atomic_compare_exchange_strong(&chopsticks[target], &desired, this->philosopherID);
@@ -126,7 +133,7 @@ void Philosopher1::WaitForFork(int target)
     }
 }
 
-void Philosopher1::LeaveTable()
+void Philosopher2::LeaveTable()
 {
     atomic_store(&chopsticks[leftChopstick],-1);
     atomic_store(&chopsticks[rightChopstick],-1);

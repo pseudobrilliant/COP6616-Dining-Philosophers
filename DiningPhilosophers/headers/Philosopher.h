@@ -40,6 +40,24 @@ public:
         stop = true;
     };
 
+
+    State GetState()
+    {
+        return currentState;
+    }
+
+    long GetTimesEaten()
+    {
+        return timesEaten;
+    }
+
+    ~Philosopher()
+    {
+    }
+
+protected:
+
+
     void SwitchState( State target)
     {
         if(stop)
@@ -92,27 +110,16 @@ public:
 
     };
 
-    State GetState()
-    {
-        return currentState;
-    }
-
-    ~Philosopher()
-    {
-    }
-
-protected:
-
     bool stop;
-    int timesEaten = 0;
+    long timesEaten = 0;
     int philosopherID = 0;
     int numChopsticks = 0;
     int leftChopstick = -1;
     int rightChopstick = -1;
     volatile atomic<int>* chopsticks;
 
-    const int thinkingTime = int(1000 * 0.1);
-    const int eatingTime = int(1000* 0.1);
+    const int thinkingTime = int(1000 * 0.3);
+    const int eatingTime = int(1000* 0.2);
 
     State currentState;
 
