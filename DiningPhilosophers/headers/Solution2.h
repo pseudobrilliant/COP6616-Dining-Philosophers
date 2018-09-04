@@ -35,7 +35,7 @@ public:
 
     void Hungry() override;
 
-    void WaitForFork(int target);
+    void WaitForChopstick(int target);
 
     void LeaveTable() override;
 };

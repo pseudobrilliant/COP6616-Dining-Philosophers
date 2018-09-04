@@ -95,13 +95,13 @@ void Philosopher1::Hungry()
     {
         if(leftChopstick < 0)
         {
-            WaitForFork(target1);
+            WaitForChopstick(target1);
             leftChopstick = target1;
         }
 
         if(leftChopstick >= 0 && rightChopstick < 1)
         {
-            WaitForFork(target2);
+            WaitForChopstick(target2);
             rightChopstick = target2;
         }
     }
@@ -109,7 +109,7 @@ void Philosopher1::Hungry()
     SwitchState(State::Eating);
 }
 
-void Philosopher1::WaitForFork(int target)
+void Philosopher1::WaitForChopstick(int target)
 {
 
     bool available = false;

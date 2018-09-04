@@ -32,7 +32,8 @@ public:
 
     void Start(State _initialState)
     {
-      SwitchState(_initialState);
+      currentState = _initialState;
+      MainLoop();
     };
 
     void Stop()
@@ -40,13 +41,7 @@ public:
         stop = true;
     };
 
-
-    State GetState()
-    {
-        return currentState;
-    }
-
-    long GetTimesEaten()
+    int GetTimesEaten()
     {
         return timesEaten;
     }
@@ -58,51 +53,44 @@ public:
 protected:
 
 
-    void SwitchState( State target)
+    void MainLoop()
     {
-        if(stop)
+        while(!stop)
         {
-            return;
-        }
-
-        if(target == State::Thinking)
-        {
-            Thinking();
-        }
-        else
-        if(target == State::Hungry)
-        {
-            Hungry();
-        }
-        else
-        if(target == State::Eating)
-        {
-            Eat();
+            if (currentState == State::Thinking)
+            {
+                Thinking();
+            }
+            else if (currentState == State::Hungry)
+            {
+                Hungry();
+            }
+            else if (currentState == State::Eating)
+            {
+                Eat();
+            }
         }
     }
 
     void Thinking()
     {
-        currentState = State::Thinking;
         printf("Philosopher %d is now thinking.\n", philosopherID);
         this_thread::sleep_for(chrono::milliseconds(thinkingTime));
-        Hungry();
+        currentState = State::Hungry;
     };
 
     virtual void Hungry()
     {
-        currentState = State::Hungry;
         printf("Philosopher %d is now hungry.\n", philosopherID);
     };
 
     void Eat()
     {
-        currentState = State::Eating;
-        printf("Philosopher %d is now eating for the %d time.\n", philosopherID, timesEaten);
+        printf("Philosopher %d is now eating for the %d time.\n", philosopherID, timesEaten + 1);
         this_thread::sleep_for(chrono::milliseconds(eatingTime));
         timesEaten ++;
         LeaveTable();
-        Thinking();
+        currentState = State::Thinking;
     };
 
     virtual void LeaveTable()
@@ -111,7 +99,7 @@ protected:
     };
 
     bool stop;
-    long timesEaten = 0;
+    int timesEaten = 0;
     int philosopherID = 0;
     int numChopsticks = 0;
     int leftChopstick = -1;
@@ -119,7 +107,7 @@ protected:
     volatile atomic<int>* chopsticks;
 
     const int thinkingTime = int(1000 * 0.3);
-    const int eatingTime = int(1000* 0.2);
+    const int eatingTime = int(1000* 0.3);
 
     State currentState;
 

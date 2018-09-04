@@ -30,7 +30,7 @@ int main()
 
     Cleanup();
 
-    cout << "Welcome to the Dining Philosophers restaurant, please press 'q' to leave.\n";
+    cout << "Thanks for visiting, please press 'q' to leave.\n";
 
     do { cin >> in; } while(in != "q");
 }
@@ -99,13 +99,13 @@ void Philosopher2::Hungry()
     {
         if(leftChopstick < 0)
         {
-            WaitForFork(target1);
+            WaitForChopstick(target1);
             leftChopstick = target1;
         }
 
         if(leftChopstick >= 0 && rightChopstick < 1)
         {
-            WaitForFork(target2);
+            WaitForChopstick(target2);
             rightChopstick = target2;
         }
     }
@@ -116,7 +116,7 @@ void Philosopher2::Hungry()
     }
 }
 
-void Philosopher2::WaitForFork(int target)
+void Philosopher2::WaitForChopstick(int target)
 {
 
     bool available = false;
