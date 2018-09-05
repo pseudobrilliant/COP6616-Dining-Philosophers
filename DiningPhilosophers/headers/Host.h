@@ -19,18 +19,17 @@ class Host
 {
 public:
     Host(volatile atomic<int> *_chopsticks, volatile atomic<int> *_reservations, volatile atomic<int> *_table,
-         volatile atomic<bool> *_reservationFlag, volatile atomic<bool> *_chopstickFlag, int _numChopsticks, int _numPhilosophers)
+         volatile atomic<int> *_seating, volatile atomic<bool> *_chopstickFlag, int _numChopsticks, int _numPhilosophers)
     {
         numChopsticks = _numChopsticks;
         numPhilosophers = _numPhilosophers;
         tableCapacity = numChopsticks - 1;
         numAtTable = 0;
 
-        chopsticks = _chopsticks;
+        seating = _seating;
         reservations = _reservations;
         table = _table;
         chopstickFlag = _chopstickFlag;
-        reservationFlag = _reservationFlag;
         stop = false;
 
 
@@ -57,11 +56,10 @@ private:
     int numAtTable = 0;
     int *dirtyChopsticks;
     deque <pair<int,int>> acceptedReservations;
-    volatile atomic<bool> *reservationFlag;
     volatile atomic<bool> *chopstickFlag;
     volatile atomic<int> *reservations;
     volatile atomic<int> *table;
-    volatile atomic<int> *chopsticks;
+    volatile atomic<int> *seating;
     bool stop = false;
 
 };

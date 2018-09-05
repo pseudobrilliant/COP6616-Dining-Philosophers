@@ -13,9 +13,9 @@ const int numPhilosophers= 5;
 const State initialState = State::Thinking;
 
 Philosopher **philosophers;
-volatile atomic<bool> reservationFlag;
 volatile atomic<bool> chopstickFlag;
 volatile atomic<int> *reservations;
+volatile atomic<int> *seatings;
 volatile atomic<int> *table;
 volatile atomic<int> *chopsticks;
 Host *host;
@@ -44,7 +44,6 @@ int main()
 
 void Initialize()
 {
-    reservationFlag = false;
     chopstickFlag = false;
 
     chopsticks = new volatile atomic<int>[numChopSticks];
@@ -58,19 +57,21 @@ void Initialize()
             table[i] = -1;
         }
     }
+    seatings = new volatile atomic<int> [numPhilosophers];
     reservations = new volatile atomic<int> [numPhilosophers];
     for(int i = 0; i < numPhilosophers; i ++)
     {
        reservations[i] = -1;
+       seatings[i] = -1;
     }
 
-    host = new Host(chopsticks, reservations, table, &reservationFlag, &chopstickFlag, numChopSticks, numPhilosophers);
+    host = new Host(chopsticks, reservations, table, seatings, &chopstickFlag, numChopSticks, numPhilosophers);
 
 
     philosophers = new Philosopher*[numPhilosophers];
     for(int i = 0; i < numPhilosophers; i ++)
     {
-        philosophers[i] = new Philosopher3(i, chopsticks, reservations, table, &reservationFlag, &chopstickFlag, numChopSticks);
+        philosophers[i] = new Philosopher3(i, chopsticks, reservations, table, seatings, &chopstickFlag, numChopSticks);
     }
 
 }
@@ -123,31 +124,30 @@ void Philosopher3::Hungry()
 {
     printf("Philosopher %d is now hungry.\n", philosopherID);
 
-    int seat = -1;
     if(!stop)
     {
-        seat = GetInLine();
+        int seat = GetInLine();
+
+        if (seat % 2 == 0)
+        {
+            WaitForChopstick(seat + 1);
+            WaitForChopstick(seat);
+        }
+        else
+        {
+            WaitForChopstick(seat);
+            WaitForChopstick(seat + 1);
+        }
+
+        leftChopstick = seat;
+        rightChopstick = seat + 1;
+        currentState = State::Eating;
     }
-
-    WaitForChopstick(seat);
-    WaitForChopstick(seat + 1);
-
-    leftChopstick = seat;
-    rightChopstick = seat+1;
-
-    currentState = State::Eating;
 }
 
 int Philosopher3::GetInLine()
 {
-    bool found = true;
-    while(found)
-    {
-        found = reservationFlag->exchange(found);
-    }
     reservations[philosopherID] = timesEaten;
-
-    *reservationFlag = false;
 
     int te  = timesEaten;
     while(!stop && te == timesEaten)
@@ -156,9 +156,9 @@ int Philosopher3::GetInLine()
     }
 
     int seat = -1;
-    while(!stop && seat == -1)
+    while(seat == -1 && !stop)
     {
-        seat = reservations[philosopherID].exchange(-1);
+        seat = seatings[philosopherID].exchange(seat);
     }
 
     return seat;
@@ -166,10 +166,12 @@ int Philosopher3::GetInLine()
 
 void Philosopher3::WaitForChopstick(int target)
 {
-    int available = -1;
-    while (!stop && available != philosopherID)
+    bool available = false;
+    while (!stop && !available)
     {
-        available = chopsticks[target];
+        int desired = -1;
+        atomic_compare_exchange_strong(&chopsticks[target], &desired, this->philosopherID);
+        available = desired == -1;
     }
 
     if (!stop)
@@ -181,7 +183,7 @@ void Philosopher3::WaitForChopstick(int target)
 void Philosopher3::LeaveTable()
 {
     bool found = true;
-    while(found)
+    while(!stop && found)
     {
         found = chopstickFlag->exchange(found);
     }

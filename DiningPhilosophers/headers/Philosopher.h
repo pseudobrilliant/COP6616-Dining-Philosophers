@@ -106,8 +106,8 @@ protected:
     int rightChopstick = -1;
     volatile atomic<int>* chopsticks;
 
-    const int thinkingTime = int(1000 * 0.3);
-    const int eatingTime = int(1000* 0.3);
+    const int thinkingTime = int(1000 * 0.1);
+    const int eatingTime = int(1000* 0.1);
 
     State currentState;
 

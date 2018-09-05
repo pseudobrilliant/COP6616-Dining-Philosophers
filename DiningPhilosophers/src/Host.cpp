@@ -31,14 +31,8 @@ void Host::Stop()
 
 int Host::GetMinReservations()
 {
-    bool found = true;
-    while(found)
-    {
-        found = reservationFlag->exchange(found);
-    }
-
     int numFound = 0;
-    for(int i = 0; i < numPhilosophers && numFound < tableCapacity - numAtTable; i ++)
+    for(int i = 0; i < numPhilosophers; i ++)
     {
         int resv = atomic_load(&reservations[i]);
         if (resv != -1)
@@ -53,15 +47,13 @@ int Host::GetMinReservations()
     {
         sort(acceptedReservations.begin(), acceptedReservations.end());
     }
-
-    *reservationFlag = false;
 }
 
 
 void Host::AssignSeating()
 {
     bool found = true;
-    while(found)
+    while(!stop && found)
     {
         found = chopstickFlag->exchange(found);
     }
@@ -70,55 +62,37 @@ void Host::AssignSeating()
 
     for (int i = 0; i < tableCapacity; i++)
     {
-        int seatedPhilosopher = table[i];
-
-        if( seatedPhilosopher != -1)
+        if(table[i] != -1)
         {
             numAtTable++;
-            int left = chopsticks[i];
-            int right = chopsticks[i+1];
-
-            if((left == -1 && right == -1))
-            {
-                chopsticks[i] = seatedPhilosopher;
-                chopsticks[i+1] = seatedPhilosopher;
-                reservations[seatedPhilosopher] = i;
-            }
         }
     }
 
-    int seatsAvailable = tableCapacity - numAtTable;
-    int reservationsAvailable = acceptedReservations.size();
+    int reservationsAccepted = acceptedReservations.size();
 
-    for(int i = 0; i < reservationsAvailable && i < seatsAvailable; i++)
+    for (int i = 0; i < tableCapacity && reservationsAccepted > 0; i += 2)
     {
-        bool inserted = false;
-        for(int j = 0; j < tableCapacity; j++)
+        if (table[i] == -1)
         {
-            if(table[j] == -1 && chopsticks[j] == -1 && chopsticks[j + 1] == -1)
-            {
-                numAtTable++;
-                int index = acceptedReservations[0].second;
-                table[j] = index;
-                chopsticks[j] = index;
-                chopsticks[j+1] = index;
-                reservations[index] = j;
-                acceptedReservations.pop_front();
-                inserted = true;
-                break;
-            }
+            numAtTable++;
+            int index = acceptedReservations[0].second;
+            seating[index] = i;
+            table[i] = index;
+            acceptedReservations.pop_front();
+            reservationsAccepted --;
         }
+    }
 
-        for(int j = 0; j < tableCapacity && !inserted; j++)
+    for (int i = 1; i < tableCapacity && reservationsAccepted > 0; i += 2)
+    {
+        if (table[i] == -1)
         {
-            if(table[j] == -1)
-            {
-                numAtTable++;
-                int index = acceptedReservations[0].second;
-                table[j] = index;
-                acceptedReservations.pop_front();
-                break;
-            }
+            numAtTable++;
+            int index = acceptedReservations[0].second;
+            seating[index] = i;
+            table[i] = index;
+            acceptedReservations.pop_front();
+            reservationsAccepted --;
         }
     }
 

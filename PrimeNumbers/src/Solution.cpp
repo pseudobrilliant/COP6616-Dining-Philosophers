@@ -1,7 +1,7 @@
 /*******************************************************************
 * Author: cblythe
 * Date: 8/25/2018
-* Description: 
+* Description: Simple Solution base class that accurately reports results.
 *******************************************************************/
 #include "../headers/Solution.h"
 
@@ -44,7 +44,7 @@ void Solution::Report()
 };
 
 
-
+// Used to debug and compare different solution results.
 void Solution::Compare(vector<int> otherNumbers)
 {
     cout <<"Left Join: ";

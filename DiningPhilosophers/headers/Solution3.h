@@ -29,14 +29,14 @@ class Philosopher3: public Philosopher
 {
 public:
     Philosopher3(int _id, volatile atomic<int> *_chopsticks, volatile atomic<int> *_reservations, volatile atomic<int> *_table,
-            volatile atomic<bool> *_reservationFlag, volatile atomic<bool> *_chopstickFlag, int _numChopsticks):
+                 volatile atomic<int> *_seatings, volatile atomic<bool> *_chopstickFlag, int _numChopsticks):
     Philosopher(_id, _chopsticks, _numChopsticks)
     {
         chopsticks = _chopsticks;
         reservations = _reservations;
         table = _table;
         chopstickFlag = _chopstickFlag;
-        reservationFlag = _reservationFlag;
+        seatings = _seatings;
     };
 
     void Hungry() override;
@@ -50,7 +50,7 @@ public:
     void LeaveTable() override;
 
 private:
-    volatile atomic<bool> *reservationFlag;
+    volatile atomic<int> *seatings;
     volatile atomic<bool> *chopstickFlag;
     volatile atomic<int> *reservations;
     volatile atomic<int> *table;

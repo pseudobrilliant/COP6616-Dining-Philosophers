@@ -106,7 +106,7 @@ void Philosopher1::Hungry()
         }
     }
 
-    SwitchState(State::Eating);
+    currentState = State::Eating;
 }
 
 void Philosopher1::WaitForChopstick(int target)

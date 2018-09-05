@@ -1,7 +1,8 @@
 /*******************************************************************
 * Author: cblythe
 * Date: 8/25/2018
-* Description: 
+* Description: Failed attempt at a ticket counter solution.
+* Likely incorrect use of flags and atomics leading to incorrect results.
 *******************************************************************/
 
 #include <sstream>

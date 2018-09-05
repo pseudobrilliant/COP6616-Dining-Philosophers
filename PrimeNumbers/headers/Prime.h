@@ -6,10 +6,9 @@
  * whether the number is prime or not. Depending on the accuracy number provided
  * this algorithm will generate multiple runs of random numbers to build likelihood
  * of number actually being prime.
- * This implementation is heavily inspired by:
+ * Since this is not integral to our study of conccurency this implementation is heavily inspired by:
  * https://www.geeksforgeeks.org/primality-test-set-3-milonger-rabin/
  * https://www.sanfoundry.com/cpp-program-implement-miller-rabin-primality-test/
- *
 *****************************************************************************/
 
 #ifndef COP6616_ASSIGNMENT1_PRIME_H
@@ -22,21 +21,25 @@
 //Chance of error is 4 ^ -k
 #define ACCURACY 9
 
-inline long MSquare(long a, long b, long mod)
+inline long MSquare(long base, long exponent, long mod)
 {
 
     long x = 1;
 
-    long y = a;
+    long y = base;
 
-    for(long i = b; i > 0; b/2)
+    while (exponent > 0)
     {
-        if (b % 2 == 1)
+        if (exponent % 2 == 1)
         {
+
             x = (x * y) % mod;
         }
 
         y = (y * y) % mod;
+
+        exponent = exponent / 2;
+
     }
 
     return x % mod;
@@ -48,13 +51,16 @@ inline long MMultiplication(long a, long b, long mod)
     long x = 0;
     long y = a % mod;
 
-    for(long i = b; i > 0; i /=2)
+    while (b > 0)
     {
         if (b % 2 == 1)
         {
             x = (x + y) % mod;
         }
+
         y = (y * 2) % mod;
+
+        b /= 2;
     }
 
     return x % mod;
@@ -87,7 +93,7 @@ inline bool IsPrime(int num)
 
         long temp = d;
 
-        long r = MSquare(temp, randNumber, n);
+        long r = MSquare(randNumber, temp, n);
 
         while (temp != n - 1 && r != 1 && r != n - 1)
         {
