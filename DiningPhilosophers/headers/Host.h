@@ -23,7 +23,7 @@ public:
     {
         numChopsticks = _numChopsticks;
         numPhilosophers = _numPhilosophers;
-        tableCapacity = numChopsticks - 1;
+        tableCapacity = numChopsticks;
         numAtTable = 0;
 
         seating = _seating;

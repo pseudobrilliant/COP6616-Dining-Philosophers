@@ -1,7 +1,11 @@
 /*******************************************************************
-* Author: cblythe
-* Date: 8/31/2018
-* Description: 
+ * Author: cblythe
+ * Date: 8/31/2018
+ * Description: Base class of philosopher that contains basic implementations of:
+ * A thread start function, a main loop that perpetually runs the philosopher logic,
+ * and functions for eating / thinking. A virtual Hungry loop is provided so that all
+ * philosophers can be hungry with the implementation left up to the child class.
+ * A virtual LeaveTable is also provided so each child class can leave the table however it best sees fit.
 *******************************************************************/
 //
 
@@ -19,6 +23,7 @@ class Philosopher
 {
 public:
 
+    //At minimum each philosopher needs an id and link to grab chopsticks
     Philosopher(int _id, volatile atomic<int> *_chopSticks, int _numChopsticks)
     {
         currentState = State::Init;
@@ -30,6 +35,7 @@ public:
         stop = false;
     };
 
+    //Starts the loop with an initial state
     void Start(State _initialState)
     {
       currentState = _initialState;
@@ -52,7 +58,7 @@ public:
 
 protected:
 
-
+    //Each loop a a state function is selected, this function will modify the state to be picked up by the next loop
     void MainLoop()
     {
         while(!stop)
@@ -72,6 +78,7 @@ protected:
         }
     }
 
+    //Thinks for thinkingTime and then becomes hungry
     void Thinking()
     {
         printf("Philosopher %d is now thinking.\n", philosopherID);
@@ -79,6 +86,7 @@ protected:
         currentState = State::Hungry;
     };
 
+    //To be overwritten by child implementation
     virtual void Hungry()
     {
         printf("Philosopher %d is now hungry.\n", philosopherID);
@@ -93,6 +101,7 @@ protected:
         currentState = State::Thinking;
     };
 
+    //To be overwritten by child implementation
     virtual void LeaveTable()
     {
 
@@ -107,7 +116,7 @@ protected:
     volatile atomic<int>* chopsticks;
 
     const int thinkingTime = int(1000 * 0.1);
-    const int eatingTime = int(1000* 0.1);
+    const int eatingTime = int(1000* 0.15);
 
     State currentState;
 
