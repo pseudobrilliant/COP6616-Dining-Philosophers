@@ -46,6 +46,8 @@ public:
 
     void AssignSeating();
 
+    void CleanTable();
+
 private:
     int GetMinReservations();
 
