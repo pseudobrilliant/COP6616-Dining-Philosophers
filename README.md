@@ -61,7 +61,7 @@
     this may result in deadlock where in 0-1, 1->2, 2->3, 3->4, and 4->0 all the threads will be waiting on each other. 
     Running this solution, the problem will be evident as the philosophers hang and proceed no further.
 
-###Solution 2 – No Deadlock**
+###Solution 2 – No Deadlock
     
        This solution attempts to address the problem of deadlock by structuring chopstick access through the order in which
     the philosopher access their required sticks. Essentially, when selecting the first chopstick a thread will consider
@@ -144,4 +144,24 @@
     supports N number of chopsticks, but C number of chopsticks. By having a central manager that can keep track of both
     threads and resources at once it becomes much easier to manage and prioritize access access between them. The implementation,
     impolications, and results of this are essentially the same as solution 3.
+    
+    --------------------------------------------------------------------------
+    Welcome to the Dining Philosophers restaurant!
+    Please enter the number of philosophers N.
+    10
+    Please enter the number of chopsticks C or press enter to use 5.
+    8
+    
+    ......
+    
+    Philosopher #0 ate a total of 1009 times.
+    Philosopher #1 ate a total of 1021 times.
+    Philosopher #2 ate a total of 1006 times.
+    Philosopher #3 ate a total of 971 times.
+    Philosopher #4 ate a total of 997 times.
+    Philosopher #5 ate a total of 989 times.
+    Philosopher #6 ate a total of 1009 times.
+    Philosopher #7 ate a total of 986 times.
+    Philosopher #8 ate a total of 1020 times.
+    Philosopher #9 ate a total of 1030 times.
 
