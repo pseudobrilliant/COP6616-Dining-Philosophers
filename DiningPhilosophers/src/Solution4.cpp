@@ -1,7 +1,7 @@
 /*******************************************************************
  * Author: cblythe
  * Date: 8/31/2018
- * Description: Concurrent solution to Dining Philosophers with no Deadlock or Starvation.
+ * Description: Concurrent solution to Dining Philosophers with no Deadlock or Starvation and N philosophers.
  * This solution differs from the others in that it uses a host thread manager to manage
  * how and when threads can have access to the resources based on priority.
  * To facilitate this 3 more shared resource arrays and one flag are introduced. When hungry,
@@ -22,8 +22,8 @@
 #include "../headers/Solution3.h"
 #include "../headers/Host.h"
 
-const int numChopSticks = 5;
-const int numPhilosophers= 5;
+int numChopSticks = 5;
+int numPhilosophers= 5;
 const State initialState = State::Thinking;
 
 Philosopher **philosophers;
@@ -38,14 +38,25 @@ vector<thread> threads;
 
 int main()
 {
-    Initialize();
+    string in;
+    cout << "Welcome to the Dining Philosophers restaurant!\nPlease enter the number of philosophers N.\n";
 
-    cout << "Welcome to the Dining Philosophers restaurant, please press 'n' to stop.\n";
+    getline (std::cin,in);
+    numPhilosophers = stoi(in);
+
+    cout << "Please enter the number of chopsticks C or press enter to use 5.\n";
+
+    getline (std::cin,in);
+    if (!in.empty())
+    {
+        numChopSticks = stoi(in);
+    }
+
+    Initialize();
 
     Run(initialState);
 
-    string in;
-    do { cin >> in; } while(in != "n");
+    do { getline (std::cin,in); } while(in != "n");
 
     Stop();
 
@@ -53,7 +64,7 @@ int main()
 
     cout << "Thanks for visiting, please press 'q' to leave.\n";
 
-    do { cin >> in; } while(in != "q");
+    do { getline (std::cin,in); } while(in != "q");
 }
 
 void Initialize()
@@ -131,6 +142,8 @@ void Cleanup()
     delete philosophers;
 }
 
+
+
 //Philosopher gets to eat by setting his reservation, waiting for his seat, and finally waiting for both
 //of his chopsticks.
 void Philosopher3::Hungry()
@@ -188,7 +201,7 @@ void Philosopher3::WaitForChopstick(int target)
 
     if (!stop)
     {
-       // printf("\tPhilosopher #%d now has chopstick #%d.\n", this->philosopherID, target);
+        // printf("\tPhilosopher #%d now has chopstick #%d.\n", this->philosopherID, target);
     }
 }
 
@@ -202,7 +215,7 @@ void Philosopher3::LeaveTable()
 
     if (!stop)
     {
-       // printf("\tPhilosopher #%d now has left chopsticks #%d and #%d.\n", this->philosopherID, leftChopstick,rightChopstick);
+        // printf("\tPhilosopher #%d now has left chopsticks #%d and #%d.\n", this->philosopherID, leftChopstick,rightChopstick);
 
         atomic_store(&table[leftChopstick], -1);
         atomic_store(&chopsticks[leftChopstick], -1);
@@ -210,7 +223,4 @@ void Philosopher3::LeaveTable()
         *chopstickFlag = false;
     }
 }
-
-
-
 
