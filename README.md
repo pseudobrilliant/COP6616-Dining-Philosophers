@@ -1,3 +1,21 @@
+#Running Solutions
+
+###Requirements
+     Linux Environment
+     CMAKE 3.5 or >
+        
+###Building
+
+     Building this project is quite simple once you have CMAKE installed.
+     From the root directory run the following:
+            - cmake CMakeLists.txt
+            - make
+     This should have built all the executable files: 
+            PrimeNum, Dining_Philosophers_1, Dining_Philosophers_2, Dining_Philosophers_3, Dining_Philosophers_4
+     
+     To run any of these use ./Dining_Philosophers_1 (example)
+        
+
 #Prime Numbers Solution
 
         I tackled this problem by first coming up with a sequential solution that would form the basis of my concurrent

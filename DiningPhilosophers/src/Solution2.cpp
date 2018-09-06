@@ -71,7 +71,7 @@ void Stop()
     printf("\n--------------------------------------------------------------------------\n");
     for (int i =0; i < numPhilosophers; i++)
     {
-        printf("Philosopher #%d ate a total of %ld times.\n", i, philosophers[i]->GetTimesEaten());
+        printf("Philosopher #%d ate a total of %d times.\n", i, philosophers[i]->GetTimesEaten());
     }
 }
 
